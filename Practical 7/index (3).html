@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Traffic Light</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #d1f2eb, #fef9e7, #fadbd8, #d6eaf8);
+      background-size: 400% 400%;
+      animation: gradientShift 10s infinite alternate;
+      font-family: "Poppins", sans-serif;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    /* --- Heading --- */
+    h1 {
+      color: #1f2937;
+      font-size: 2.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 2rem;
+      letter-spacing: 0.5px;
+    }
+
+    /* Small ring beside emoji */
+    .progress-ring {
+      width: 35px;
+      height: 35px;
+      transform: rotate(-90deg);
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    svg circle {
+      fill: none;
+      stroke-width: 6;
+      stroke-linecap: round;
+      stroke-dasharray: 157;
+      stroke-dashoffset: 157;
+      transition: stroke-dashoffset 0.8s linear, stroke 0.5s ease;
+    }
+
+    /* --- Traffic Light Box --- */
+    .traffic-light {
+      background: #1e293b;
+      border-radius: 2rem;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      display: inline-block;
+    }
+
+    .light {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin: 1.5rem 0;
+      transition: all 0.3s ease;
+      box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .light.red { background: #4a5568; }
+    .light.yellow { background: #4a5568; }
+    .light.green { background: #4a5568; }
+
+    .light.red.active {
+      background: #ef4444;
+      box-shadow: 0 0 40px #ef4444, inset 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .light.yellow.active {
+      background: #fbbf24;
+      box-shadow: 0 0 40px #fbbf24, inset 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .light.green.active {
+      background: #10b981;
+      box-shadow: 0 0 40px #10b981, inset 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .status {
+      margin-top: 1rem;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: #111827;
+    }
+  </style>
+</head>
+<body>
+  <h1>
+     Traffic Light 🚦
+    <svg class="progress-ring">
+      <circle cx="17.5" cy="17.5" r="15"></circle>
+    </svg>
+  </h1>
+
+  <div class="traffic-light">
+    <div class="light red" id="red-light"></div>
+    <div class="light yellow" id="yellow-light"></div>
+    <div class="light green" id="green-light"></div>
+  </div>
+
+  <div class="status" id="status">Stop</div>
+
+  <script>
+    let currentState = 0;
+    const states = [
+      { name: 'red', duration: 5, status: 'Stop', color: '#ef4444' },
+      { name: 'yellow', duration: 2, status: 'Caution', color: '#fbbf24' },
+      { name: 'green', duration: 5, status: 'Go', color: '#10b981' }
+    ];
+
+    let timeRemaining = states[0].duration;
+    const circle = document.querySelector("circle");
+    const radius = circle.r.baseVal.value;
+    const circumference = 2 * Math.PI * radius;
+    circle.style.strokeDasharray = `${circumference}`;
+    circle.style.strokeDashoffset = circumference;
+
+    function setProgress(percent, color) {
+      const offset = circumference - (percent / 100) * circumference;
+      circle.style.strokeDashoffset = offset;
+      circle.style.stroke = color;
+    }
+
+    function updateLights() {
+      document.querySelectorAll(".light").forEach(l => l.classList.remove("active"));
+      const current = states[currentState];
+      document.getElementById(`${current.name}-light`).classList.add("active");
+      document.getElementById("status").textContent = current.status;
+      setProgress((timeRemaining / current.duration) * 100, current.color);
+    }
+
+    function tick() {
+      timeRemaining--;
+      setProgress((timeRemaining / states[currentState].duration) * 100, states[currentState].color);
+
+      if (timeRemaining <= 0) {
+        currentState = (currentState + 1) % states.length;
+        timeRemaining = states[currentState].duration;
+      }
+      updateLights();
+    }
+
+    function startTrafficLight() {
+      updateLights();
+      setInterval(tick, 1000);
+    }
+
+    startTrafficLight();
+  </script>
+</body>
+</html>
