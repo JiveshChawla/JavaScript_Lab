@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Palindrome Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #9fa1b4;
+      padding: 30px;
+    }
+    h2 {
+      color: #333;
+    }
+    .box {
+      background: white;
+      max-width: 400px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    input {
+      padding: 8px;
+      width: 70%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      padding: 8px 15px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    p {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Palindrome Number Checker</h2>
+  <div class="box">
+    <input type="number" id="num" placeholder="Enter a number">
+    <button onclick="checkPalindrome()">Check</button>
+    <p id="result"></p>
+  </div>
+
+  <script>
+    // Function to reverse a number
+    function reverseNumber(n) {
+      let reversed = 0;
+      let temp = n;
+      while (temp > 0) {
+        let digit = temp % 10;        // extract last digit
+        reversed = reversed * 10 + digit; // build reversed number
+        temp = Math.floor(temp / 10); // remove last digit
+      }
+      return reversed;
+    }
+
+    // Function to check if number is palindrome
+    function checkPalindrome() {
+      let num = parseInt(document.getElementById("num").value);
+      let result = document.getElementById("result");
+
+      if (isNaN(num)) {
+        result.textContent = " Please enter a valid number!";
+        return;
+      }
+
+      let reversed = reverseNumber(num);
+
+      if (num === reversed) {
+        result.textContent = ` ${num} is a Palindrome!`;
+      } else {
+        result.textContent = ` ${num} is NOT a Palindrome (Reversed: ${reversed}).`;
+      }
+    }
+  </script>
+</body>
+</html>
