@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Gadgets</title>
+    <link rel="stylesheet" href="shopping.css">
+</head>
+<body>
+
+    <header>
+        <h1>Blitzz Gadgets</h1>
+    </header>
+
+    <div class="container">
+        <main>
+            <h2>Our Products</h2>
+            <section id="products">
+                <div class="product">
+                    <img src="https://www.lapcare.com/cdn/shop/files/Fitso_3_black.jpg?v=1757325785&width=2048" alt="Smartwatch">
+                    <h3>Smartwatch Pro</h3>
+                    <p class="price">$249.99</p>
+                    <button class="add-to-cart-btn" data-name="Smartwatch Pro" data-price="249.99">Add to Cart</button>
+                </div>
+                
+                <div class="product">
+                    <img src="https://m.media-amazon.com/images/I/61sCTD4mC2L.jpg" alt="Wireless Headphones">
+                    <h3>Wireless Headphones</h3>
+                    <p class="price">$129.50</p>
+                    <button class="add-to-cart-btn" data-name="Wireless Headphones" data-price="129.50">Add to Cart</button>
+                </div>
+                
+                <div class="product">
+                    <img src="https://th.bing.com/th/id/OIP.iJqi_sQZPWj82neUYbJ4wQHaEK?w=329&h=185&c=7&r=0&o=7&cb=ucfimg2&dpr=1.3&pid=1.7&rm=3&ucfimg=1" alt="Mechanical Keyboard">
+                    <h3>Mechanical Keyboard</h3>
+                    <p class="price">$85.00</p>
+                    <button class="add-to-cart-btn" data-name="Mechanical Keyboard" data-price="85.00">Add to Cart</button>
+                </div>
+                
+                <div class="product">
+                    <img src="https://th.bing.com/th/id/OIP.GQDyhEwV60Xh4sdqJVYhygHaHa?w=159&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.3&pid=1.7&rm=3&ucfimg=1" alt="4K Webcam">
+                    <h3>4K Webcam</h3>
+                    <p class="price">$99.99</p>
+                    <button class="add-to-cart-btn" data-name="4K Webcam" data-price="99.99">Add to Cart</button>
+                </div>
+            </section>
+        </main>
+
+        <aside>
+            <h2>Shopping Cart </h2>
+            <ul id="cart-items">
+                <p>Your cart is empty.</p>
+            </ul>
+            <p id="cart-total">Total: $0.00</p>
+        </aside>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Blitzz Gadgets. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Select all "Add to Cart" buttons
+            const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+            
+            // Select the cart list and total elements
+            const cartItemsList = document.getElementById('cart-items');
+            const cartTotalElement = document.getElementById('cart-total');
+
+            // Initialize an empty cart as an array
+            let cart = [];
+
+            // Add a click event listener to each button
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Get product details from data-* attributes
+                    const name = button.dataset.name;
+                    const price = parseFloat(button.dataset.price);
+
+                    // Add the item to the cart array
+                    addToCart(name, price);
+                });
+            });
+
+            function addToCart(name, price) {
+                // Check if the item is already in the cart
+                const existingItem = cart.find(item => item.name === name);
+
+                if (existingItem) {
+                    // If it exists, just increase the quantity
+                    existingItem.quantity++;
+                } else {
+                    // If it's a new item, add it to the cart with quantity 1
+                    cart.push({ name, price, quantity: 1 });
+                }
+
+                // Update the display
+                updateCartDisplay();
+            }
+
+            function updateCartDisplay() {
+                // Clear the current cart display
+                cartItemsList.innerHTML = '';
+
+                if (cart.length === 0) {
+                    cartItemsList.innerHTML = '<p>Your cart is empty.</p>';
+                } else {
+                    // Loop through the cart array and create list items
+                    cart.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = `${item.name} (x${item.quantity}) - $${(item.price * item.quantity).toFixed(2)}`;
+                        cartItemsList.appendChild(li);
+                    });
+                }
+                
+                // Recalculate and display the total bill
+                calculateTotal();
+            }
+
+            function calculateTotal() {
+                // Use the reduce method to sum up the total cost
+                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                
+                // Display the total, formatted to 2 decimal places
+                cartTotalElement.textContent = `Total: $${total.toFixed(2)}`;
+            }
+        });
+    </script>
+
+</body>
+</html>
